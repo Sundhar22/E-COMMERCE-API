@@ -5,6 +5,7 @@ import org.springframework.http.ProblemDetail;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.AccountStatusException;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
@@ -25,6 +26,10 @@ public class GlobalExceptionHandler {
             errorDetail.setProperty("description", "The username or password is incorrect");
 
             return errorDetail;
+        }
+        if (exception instanceof MethodArgumentNotValidException){
+            errorDetail = ProblemDetail.forStatusAndDetail(HttpStatusCode.valueOf(400),exception.getMessage());
+            errorDetail.setProperty("description","The password is invalid");
         }
 
         if (exception instanceof AccountStatusException) {
